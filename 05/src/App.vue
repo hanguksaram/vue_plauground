@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <app-header :maxQuotes="maxQuotes" :quoteCount="gridQuotes.length"></app-header>
         <app-new-quote @newQuoteAdded="addQuote($event)"></app-new-quote>
         <app-quote-form v-if="false" :addQuoteFn="addQuote"></app-quote-form>
         <app-quote-grid @quoteDeleted="deleteQuote($event)" :removefn="removeQuote" :quotes="gridQuotes"></app-quote-grid>
@@ -12,6 +13,7 @@
 </template>
 
 <script>
+    import Header from './components/Header.vue'
     import NewQuote from './components/NewQuote.vue'
     import QuoteGrid from './components/QuoteGrid.vue'
     import QuoteForm from './components/QuoteForm.vue'
@@ -31,14 +33,22 @@
         components: {
             appQuoteGrid: QuoteGrid,
             appQuoteForm: QuoteForm,
-            appNewQuote: NewQuote
+            appNewQuote: NewQuote,
+            appHeader: Header
+
         
         },
         methods: {
             addQuote(newQuote) {
-                newQuote = {text: newQuote, id: this.gridQuotes.length + 1}
-                this.gridQuotes = [...this.gridQuotes, newQuote]
-                console.log(this.gridQuotes)
+                if (this.gridQuotes.length >= 10) {
+                    alert('Remove quote before adding new one')       
+                } else {
+                    newQuote = {text: newQuote, id: this.gridQuotes.length + 1}
+                    this.gridQuotes = [...this.gridQuotes, newQuote]
+                    console.log(this.gridQuotes)
+                }
+                    
+             
             },
             removeQuote(id) {
                 return () => {

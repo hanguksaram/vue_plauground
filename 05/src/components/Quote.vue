@@ -1,7 +1,8 @@
 <template>
     <div class="col-sm-6 col-md-4 col-lg-3">
         <div class="panel panel-default">
-            <div @click="removeQ" class="panel-body quote">
+            <div  class="panel-body quote">
+                <!-- @click="removeQ" -->
                 <slot></slot>
             </div>
         </div>
@@ -12,14 +13,14 @@
 export default {
     props: {
         quotes: Array,
-        removeQuote: Function
+        // removeQuote: Function
     },
     methods: {
-        removeQ() {
-            if (confirm('Are u sure to delete quote?'))
-                this.removeQuote()
-            return
-        }
+        // removeQ() {
+        //     if (confirm('Are u sure to delete quote?'))
+        //         this.removeQuote()
+        //     return
+        // }
     }
 
 }

@@ -2,7 +2,7 @@
     <div class="container">
         <app-new-quote @newQuoteAdded="addQuote($event)"></app-new-quote>
         <app-quote-form v-if="false" :addQuoteFn="addQuote"></app-quote-form>
-        <app-quote-grid :removefn="removeQuote" :quotes="gridQuotes"></app-quote-grid>
+        <app-quote-grid @quoteDeleted="deleteQuote($event)" :removefn="removeQuote" :quotes="gridQuotes"></app-quote-grid>
         <div class="row">
             <div class="col-sm-12 text-center">
                 <div class="alert alert-info">Info: Click on a Quote to Delete it!</div>
@@ -44,6 +44,10 @@
                 return () => {
                     this.gridQuotes = this.gridQuotes.filter(q => q.id !== id)
                 }
+            },
+            //event based deleting way with modifing existing array
+            deleteQuote(index) {
+                this.gridQuotes.splice(index, 1)
             }
         }
         

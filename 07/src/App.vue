@@ -12,7 +12,7 @@
             <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
                 <h1>Custom directives</h1>
                 <p v-highlight.delayed="'red'">Color this</p>
-                <p v-local-highlight.blink="'blue'">Color this</p>
+                <p v-local-highlight.blink="{color: 'red', delay: 500}">Color this</p>
                 
             </div>
         </div>
@@ -36,22 +36,22 @@ export default {
           delay = 3000;
         }
         setTimeout(() => {
-          changeColor(binding.value);
-        }, delay);
+          changeColor(binding.value.color);
+        }, binding.value.delay);
 
         if (binding.modifiers["blink"]) {
           let i = 0;
           setInterval(() => {
             i++;
             if (i % 2 === 0) {
-                changeColor(binding.value)
+                changeColor(binding.value.color)
             } else {
                 changeColor('inherit')
             }
             if (i === 100) {
                 i = 0
             }
-          }, 1000); 
+          }, binding.value.delay); 
         }
       }
     }

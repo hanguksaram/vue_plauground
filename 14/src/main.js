@@ -8,6 +8,7 @@ import store from './store'
 
 Vue.use(Vuelidate)
 
+axios.defaults.baseURL = 'https://vuejshttp-2cd66.firebaseio.com/'
 
 new Vue({
   el: '#app',

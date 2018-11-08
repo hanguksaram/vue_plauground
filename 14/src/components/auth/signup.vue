@@ -16,6 +16,17 @@
                   <p v-if="$v.email.$error">Please provide a valid email</p>
                   
         </div>
+        <div 
+          class="input">
+          <label for="email">Mail</label>
+          <input
+                  type="email"
+                  id="email"
+                  
+                  v-model="emailConfirmation">
+               <p>{{emailConfirmation}}</p>
+                  
+        </div>
         <div
                 :class="{invalid: $v.age.$error}"
                 class="input">
@@ -96,6 +107,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   import { requiredUnless ,required, email, numeric, minValue, minLength, sameAs } from 'vuelidate/lib/validators'
   export default {
     data () {
@@ -106,14 +118,24 @@
         confirmPassword: '',
         country: 'usa',
         hobbyInputs: [],
-        terms: false
+        terms: false,
+        emailConfirmation: ''
       }
     },
     validations: {
         email: {
             required,
-            email
+            email,
+            unique: function(value){
+                if (value === '') return true
+                return axios.get('/users.json?orderBy="email"&equalTo="' + value +'"')
+                    .then(res => {
+                        return Object.keys(res.data).length === 0
+                    })
+                
+            }
         },
+        
         age: {
             required,
             numeric,
@@ -132,6 +154,16 @@
         },
         terms: {
             required
+        },
+
+        hobbyInputs: {
+            minLen: minLength(1),
+            $each: {
+                value: {
+                    required,
+                    minLen: minLength(5)
+                }
+            }
         }
     },
         methods: {
@@ -147,6 +179,7 @@
       },
       onSubmit () {
         const formData = {
+          
           email: this.email,
           age: this.age,
           password: this.password,

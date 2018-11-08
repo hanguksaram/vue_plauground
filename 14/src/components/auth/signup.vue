@@ -2,33 +2,54 @@
   <div id="signup">
     <div class="signup-form">
       <form novalidate @submit.prevent="onSubmit">
-        <div class="input">
+        <div 
+          class="input"
+          :class="{invalid: $v.email.$error}">
           <label for="email">Mail</label>
           <input
                   type="email"
                   id="email"
+                  @focus="$v.email.$reset()"
+                  @blur="$v.email.$touch()"
                   v-model="email">
+                <p>{{$v.email}}</p>
+                  <p v-if="$v.email.$error">Please provide a valid email</p>
+                  
         </div>
-        <div class="input">
+        <div
+                :class="{invalid: $v.age.$error}"
+                class="input">
           <label for="age">Your Age</label>
           <input
                   type="number"
                   id="age"
+                  @focus="$v.age.$reset()"
+                  @blur="$v.age.$touch()"
                   v-model.number="age">
+          <p v-if="$v.age.$error">Your have to be at least {{ $v.age.$params.minVal.min}}</p>
         </div>
-        <div class="input">
-          <label for="password">Password</label>
-          <input
+        <div
+            :class="{invalid: $v.password.$error}" 
+            class="input">
+        <label for="password">Password</label>
+        <input
                   type="password"
                   id="password"
+                  @focus="$v.password.$reset(); $v.confirmPassword.$reset()"
+                  @blur="$v.password.$touch(); $v.confirmPassword.$touch()"
                   v-model="password">
         </div>
-        <div class="input">
+        <div
+             :class="{invalid: $v.confirmPassword.$error}" 
+            class="input">
           <label for="confirm-password">Confirm Password</label>
           <input
                   type="password"
                   id="confirm-password"
+                  @focus="$v.confirmPassword.$reset(); $v.password.$reset()"
+                  @blur="$v.confirmPassword.$touch(); $v.password.$touch() "
                   v-model="confirmPassword">
+                  <p v-if="$v.confirmPassword.$error">Passwords should match</p>
         </div>
         <div class="input">
           <label for="country">Country</label>
@@ -56,8 +77,14 @@
             </div>
           </div>
         </div>
-        <div class="input inline">
-          <input type="checkbox" id="terms" v-model="terms">
+        <div
+            :class="{invalid: $v.terms.$error}"
+            class="input inline">
+          <input
+            @change="$v.terms.$touch()" 
+            type="checkbox" 
+            id="terms" v-model="terms">
+            <p>{{$v.terms}}</p>
           <label for="terms">Accept Terms of Use</label>
         </div>
         <div class="submit">
@@ -69,8 +96,7 @@
 </template>
 
 <script>
-import axios from '../../axios-auth'
-
+  import { requiredUnless ,required, email, numeric, minValue, minLength, sameAs } from 'vuelidate/lib/validators'
   export default {
     data () {
       return {
@@ -83,7 +109,32 @@ import axios from '../../axios-auth'
         terms: false
       }
     },
-    methods: {
+    validations: {
+        email: {
+            required,
+            email
+        },
+        age: {
+            required,
+            numeric,
+            minVal: minValue(18)
+
+      },
+        password: {
+            required,
+            minLen: minLength(6)
+        },
+        confirmPassword: {
+            // sameAs: sameAs('password')
+            sameAs: sameAs(vm => {
+                return vm.password
+            })
+        },
+        terms: {
+            required
+        }
+    },
+        methods: {
       onAddHobby () {
         const newHobby = {
           id: Math.random() * Math.random() * 1000,
@@ -106,8 +157,12 @@ import axios from '../../axios-auth'
         }
         console.log(formData)
         this.$store.dispatch('signup', {email:formData.email, password: formData.password})
+      },
+      
+    },
+    created() {
+        console.log(this.$v.email)
       }
-    }
   }
 </script>
 
@@ -196,5 +251,12 @@ import axios from '../../axios-auth'
     background-color: transparent;
     color: #ccc;
     cursor: not-allowed;
+  }
+  .input.invalid input {
+    border: 1px solid red;
+    background-color: #ffc9aa;
+  }
+  .input.invalid label {
+    color: red;
   }
 </style>

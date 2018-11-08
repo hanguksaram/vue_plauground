@@ -19,7 +19,7 @@ export default new Vuex.Store({
   //single aciton also can orginize dispatch chaining
   actions: {
     signup({commit, dispatch, state}, authData) {
-      axios.post('/signupNewUser?key=AIzaSyDjtUnO9r6GKlGLJFjhHtRHf4Mu_Nyo1B4', {
+      axios.post('/signupNewUser?key=', {
         email: authData.email,
         password: authData.password,
         returnSecureToken: true
@@ -33,7 +33,7 @@ export default new Vuex.Store({
         }, error => console.log(error))
     },
     login({commit}, authData) {
-      axios.post('/verifyPassword?key=AIzaSyDjtUnO9r6GKlGLJFjhHtRHf4Mu_Nyo1B4', {
+      axios.post('/verifyPassword?key=', {
         email: authData.email,
         password: authData.password,
         returnSecureToken: true
@@ -52,6 +52,9 @@ export default new Vuex.Store({
   getters: {
     user (state) {
       return state.user
+    },
+    isAuthenticated (state) {
+      return state.idToken !== null
     }
   }
 })

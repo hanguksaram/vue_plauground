@@ -127,11 +127,18 @@
             required,
             email,
             unique: function(value){
-                if (value === '') return true
-                return axios.get('/users.json?orderBy="email"&equalTo="' + value +'"')
+                //pulling server only when email match regex
+                if (this.$v.email.email) {
+                    return axios.get('/users.json?orderBy="email"&equalTo="' + value +'"')
                     .then(res => {
                         return Object.keys(res.data).length === 0
                     })
+                } else {
+                    return true
+                }
+
+
+               
                 
             }
         },
